@@ -1,0 +1,75 @@
+import { LifeBuoy } from "lucide-react"
+import type { ResourceConfig } from "@/admin/types"
+
+export const tickets: ResourceConfig = {
+  name: "tickets",
+  label: "Murojaat",
+  labelPlural: "Murojaatlar",
+  icon: LifeBuoy,
+  group: "Savdo",
+  description: "Qo'llab-quvvatlash so'rovlari va ularning holati",
+  recordLabel: (r) => String(r.subject ?? r.id),
+  defaultSort: { field: "createdAt", order: "desc" },
+  searchPlaceholder: "Mavzu bo'yicha qidirish...",
+  fields: [
+    {
+      name: "subject",
+      label: "Mavzu",
+      type: "text",
+      primary: true,
+      searchable: true,
+      sortable: true,
+      required: true,
+      placeholder: "Muammo qisqacha tavsifi",
+    },
+    {
+      name: "customer",
+      label: "Mijoz",
+      type: "relation",
+      relation: { resource: "users" },
+      required: true,
+    },
+    {
+      name: "priority",
+      label: "Muhimlik",
+      type: "badge",
+      sortable: true,
+      filterable: true,
+      defaultValue: "medium",
+      options: [
+        { value: "low", label: "Past", tone: "neutral" },
+        { value: "medium", label: "O'rta", tone: "info" },
+        { value: "high", label: "Yuqori", tone: "warning" },
+        { value: "urgent", label: "Shoshilinch", tone: "danger" },
+      ],
+    },
+    {
+      name: "status",
+      label: "Holat",
+      type: "badge",
+      sortable: true,
+      filterable: true,
+      defaultValue: "open",
+      options: [
+        { value: "open", label: "Ochiq", tone: "info" },
+        { value: "pending", label: "Kutilmoqda", tone: "warning" },
+        { value: "resolved", label: "Hal qilingan", tone: "success" },
+        { value: "closed", label: "Yopilgan", tone: "neutral" },
+      ],
+    },
+    {
+      name: "assignee",
+      label: "Mas'ul",
+      type: "text",
+      filterable: true,
+      placeholder: "Agent ismi",
+    },
+    {
+      name: "createdAt",
+      label: "Yaratilgan",
+      type: "datetime",
+      sortable: true,
+      align: "end",
+    },
+  ],
+}
