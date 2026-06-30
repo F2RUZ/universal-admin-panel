@@ -34,8 +34,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { resourcesByGroup } from "@/admin/registry"
+import { initials } from "@/admin/ui/format"
+import { logout } from "@/auth/actions"
 
-export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
+interface SidebarUser {
+  id: string
+  name: string
+  email: string
+  role: string
+}
+
+export function AdminSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: SidebarUser }) {
   const pathname = usePathname()
   const groups = resourcesByGroup()
 
@@ -126,12 +138,12 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="size-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg">SR</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{initials(user.name)}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Sofia R.</span>
+                    <span className="truncate font-semibold">{user.name}</span>
                     <span className="truncate text-xs text-muted-foreground">
-                      sofia@example.com
+                      {user.email}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
@@ -140,8 +152,8 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
               <DropdownMenuContent side="right" align="end" className="w-56 rounded-lg">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium">Sofia Rashidova</span>
-                    <span className="text-xs text-muted-foreground">sofia@example.com</span>
+                    <span className="text-sm font-medium">{user.name}</span>
+                    <span className="text-xs text-muted-foreground">{user.email}</span>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -149,15 +161,21 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
                   <Sparkles />
                   Pro'ga o'tish
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings />
-                  Sozlamalar
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/settings">
+                    <Settings />
+                    Sozlamalar
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">
-                  <LogOut />
-                  Chiqish
-                </DropdownMenuItem>
+                <form action={logout}>
+                  <DropdownMenuItem variant="destructive" asChild>
+                    <button type="submit" className="w-full">
+                      <LogOut />
+                      Chiqish
+                    </button>
+                  </DropdownMenuItem>
+                </form>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

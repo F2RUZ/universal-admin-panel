@@ -146,6 +146,52 @@ function makeTickets(count: number, userIds: string[], agents: string[]): Record
   return rows
 }
 
+const projectNames = [
+  "Mobil ilova", "Veb-sayt redizayni", "API migratsiyasi", "CRM integratsiyasi",
+  "To'lov tizimi", "Analitika paneli", "Onboarding oqimi", "Qidiruv optimizatsiyasi",
+  "Bildirishnomalar markazi", "Hisobot moduli", "Ombor avtomatlashtiruvi", "Chat qo'llab-quvvatlash",
+]
+const projectStatuses = ["planning", "active", "on_hold", "completed"]
+const projectPriorities = ["low", "medium", "high"]
+
+function makeProjects(count: number, userIds: string[]): RecordItem[] {
+  const rows: RecordItem[] = []
+  for (let i = 0; i < count; i++) {
+    rows.push({
+      id: `proj_${5000 + i}`,
+      name: `${pick(projectNames)} ${pick(["v2", "2026", "Faza 1", "MVP", "Q3"])}`,
+      owner: pick(userIds),
+      status: pick(projectStatuses),
+      priority: pick(projectPriorities),
+      budget: int(2000, 120000),
+      progress: int(0, 100),
+      startDate: isoDate(daysAgo(int(30, 400))),
+      dueDate: isoDate(daysAgo(int(-120, 60))), // ba'zilari kelajakda
+    })
+  }
+  return rows
+}
+
+const invoiceStatuses = ["draft", "sent", "paid", "overdue", "void"]
+const invoiceMethods = ["card", "transfer", "cash"]
+
+function makeInvoices(count: number, userIds: string[]): RecordItem[] {
+  const rows: RecordItem[] = []
+  for (let i = 0; i < count; i++) {
+    rows.push({
+      id: `inv_${6000 + i}`,
+      number: `2026-${1000 + i}`,
+      customer: pick(userIds),
+      amount: int(50, 9800) + 0.5,
+      status: pick(invoiceStatuses),
+      method: pick(invoiceMethods),
+      issuedAt: isoDate(daysAgo(int(0, 200))),
+      dueAt: isoDate(daysAgo(int(-30, 30))), // ba'zilari kelajakda
+    })
+  }
+  return rows
+}
+
 export function generateSeed(): Record<string, RecordItem[]> {
   const users = makeUsers(42)
   const userIds = users.map((u) => u.id as string)
@@ -155,5 +201,7 @@ export function generateSeed(): Record<string, RecordItem[]> {
     products: makeProducts(36),
     orders: makeOrders(58, userIds),
     tickets: makeTickets(30, userIds, agents),
+    projects: makeProjects(24, userIds),
+    invoices: makeInvoices(40, userIds),
   }
 }
